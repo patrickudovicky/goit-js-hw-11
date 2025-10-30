@@ -1,34 +1,50 @@
-const loader = document.getElementById('loader');
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-export function showLoader() {
-  loader.classList.add('loader--visible');
-}
+const galleryContainer = document.querySelector('.gallery');
+const loader = document.querySelector('.loader');
 
-export function hideLoader() {
-  loader.classList.remove('loader--visible');
-}
-
-export function clearGallery() {
-  const gallery = document.getElementById('gallery');
-  gallery.innerHTML = '';
-}
+let lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 export function addGallery(images) {
-  const gallery = document.getElementById('gallery');
-  const markup = images.map(
-    ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
+  const markup = images
+    .map(
+      ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
       <li class="gallery-item">
-        <a href="${largeImageURL}" data-caption="${tags}">
-          <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+        <a href="${largeImageURL}">
+          <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
         </a>
         <div class="info">
-          <div class="info-item"><span class="label">Likes</span><span class="value">${likes}</span></div>
-          <div class="info-item"><span class="label">Views</span><span class="value">${views}</span></div>
-          <div class="info-item"><span class="label">Comments</span><span class="value">${comments}</span></div>
-          <div class="info-item"><span class="label">Downloads</span><span class="value">${downloads}</span></div>
+          <p class="info-item"><b>Likes</b> ${likes}</p>
+          <p class="info-item"><b>Views</b> ${views}</p>
+          <p class="info-item"><b>Comments</b> ${comments}</p>
+          <p class="info-item"><b>Downloads</b> ${downloads}</p>
         </div>
       </li>
     `
-  ).join('');
-  gallery.insertAdjacentHTML('beforeend', markup);
+    )
+    .join('');
+
+  galleryContainer.insertAdjacentHTML('beforeend', markup);
+  lightbox.refresh();
+}
+
+export function clearGallery() {
+  galleryContainer.innerHTML = '';
+   lightbox.destroy();
+   lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+}
+
+export function showLoader() {
+    loader.classList.add('is-visible');
+}
+
+export function hideLoader() {
+    loader.classList.remove('is-visible');
 }
